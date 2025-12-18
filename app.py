@@ -9,9 +9,11 @@ from urllib.parse import urlparse
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all domains
 
-API_KEY = "AIzaSyBajJF8VF8wsl9fZd8IXjQs_g3Sz3CZ0_Q"  # Your API Key
-CX = "f2d5b992986d4480f"  # Your CSE ID
+# ---------------- CONFIGURATION ----------------
+API_KEY = "AIzaSyBajJF8VF8wsl9fZd8IXjQs_g3Sz3CZ0_Q"  # Replace with your API Key
+CX = "f2d5b992986d4480f"  # Replace with your Custom Search Engine ID
 
+# ---------------- HELPER FUNCTION ----------------
 def fetch_image_urls(query, num_images):
     images = []
     start_index = 1
@@ -23,6 +25,7 @@ def fetch_image_urls(query, num_images):
             f"?key={API_KEY}&cx={CX}&q={query}"
             f"&searchType=image&start={start_index}&num={min(10, num_images - downloaded)}"
         )
+
         response = requests.get(url)
         if response.status_code != 200:
             break
@@ -44,6 +47,7 @@ def fetch_image_urls(query, num_images):
 
     return images
 
+# ---------------- ROUTES ----------------
 @app.route("/images", methods=["POST"])
 def get_images():
     data = request.json
@@ -87,6 +91,7 @@ def download_zip():
         download_name=f"{query}.zip"
     )
 
+# ---------------- RUN APP ----------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
